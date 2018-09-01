@@ -3,6 +3,7 @@ package com.example.jimenez.appmunitacna;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements onItemClickListen
     RecyclerView recyclerview;
     @BindView(R.id.containerMain)
     CoordinatorLayout containerMain;
+    //App brus
 
 
     private categoriaAdapter adapter;
@@ -48,6 +50,9 @@ public class MainActivity extends AppCompatActivity implements onItemClickListen
         configAdapter();
         configRecyclerView();
         generateCategoria();
+
+
+
     }
 
 
