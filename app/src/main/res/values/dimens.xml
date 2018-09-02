@@ -7,5 +7,7 @@
     <dimen name="imageView.inset">-4dp</dimen>
     <dimen name="imageView.radius">18dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="main.image.size">64dp</dimen>
+    <dimen name="login.tv.padding">8dp</dimen>
 </resources>
 
