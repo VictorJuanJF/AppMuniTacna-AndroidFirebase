@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-feature
         android:name="android.hardware.camera2"
@@ -44,6 +46,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jimenez.appmunitacna.MainActivity" />
         </activity>
+
+        <provider
+            android:authorities="com.example.jimenez.appmunitacna"
+            android:name="android.support.v4.content.FileProvider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
+
         <activity android:name=".LoginActivity"></activity>
         <activity
             android:name=".PerfilUsuarioActivity"
@@ -54,6 +66,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jimenez.appmunitacna.MainActivity" />
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="8f6662d4e5a8299e470beccd8fc3591ebb7521f2" />
     </application>
 
 </manifest>

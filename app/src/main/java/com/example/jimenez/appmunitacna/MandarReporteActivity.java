@@ -13,6 +13,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,9 +23,11 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -49,11 +52,14 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,7 +74,11 @@ public class MandarReporteActivity extends AppCompatActivity {
     private static final int RP_STORAGE=122;
 
     private static final String TAG = "FirebaseData";
+    private static final String MY_PHOTO = "my_photo";
     private Uri mPhotoSelectedUri;
+    private String mPhotoSelectedCameraUri;
+    private String photoName="reporte";
+    private String mCurrentPhotoPath;
 
 
     Categoria mCategoria;
@@ -146,7 +156,8 @@ public class MandarReporteActivity extends AppCompatActivity {
         imgCamara.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCamera();
+                //openCamera();
+                dispatchTakePictureIntent();
             }
         });
         imgGaleria.setOnClickListener(new View.OnClickListener() {
@@ -155,6 +166,39 @@ public class MandarReporteActivity extends AppCompatActivity {
                 openGallery();
             }
         });
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if(takePictureIntent.resolveActivity(getPackageManager())!=null){
+            File photoFile;
+            photoFile=createImageFile();
+            if (photoFile != null){
+                Uri photoUri = FileProvider.getUriForFile(this,
+                        "com.example.jimenez.appmunitacna", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                startActivityForResult(takePictureIntent, RC_CAMERA);
+            }
+        }
+    }
+
+    private File createImageFile() {
+        final String timeStamp=new SimpleDateFormat("dd-MM-yyyy_HHmmss",Locale.ROOT)
+                .format(new Date());
+        final String imageFileName=MY_PHOTO+timeStamp+"_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        File image = null;
+        try {
+            image = File.createTempFile(imageFileName, ".jpg", storageDir);
+            mCurrentPhotoPath = image.getAbsolutePath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return image;
+
+
     }
 
     private void openGallery() {
@@ -179,6 +223,7 @@ public class MandarReporteActivity extends AppCompatActivity {
         long timeInMillis = System.currentTimeMillis();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String dateString = formatter.format(new Date(timeInMillis));
+        photoName= photoName+String.valueOf(timeInMillis);
         tvFecha.setText("Hoy es " + dateString);
 
     }
@@ -207,13 +252,29 @@ public class MandarReporteActivity extends AppCompatActivity {
                     }
                     break;
                 case RC_CAMERA:
-                    Bundle extras = data.getExtras();
-                    Bitmap bitmap = (Bitmap) extras.get("data");
-                    showPhoto();
-                    imgFoto.setImageBitmap(bitmap);
+                    mPhotoSelectedUri=addPicGallery();
+
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),
+                                mPhotoSelectedUri);
+                        showPhoto();
+                        imgFoto.setImageBitmap(bitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
             }
         }
+    }
+
+    private Uri addPicGallery() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File file = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(file);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+        mCurrentPhotoPath = null;
+        return contentUri;
     }
 
     private void showPhoto() {
@@ -294,48 +355,35 @@ public class MandarReporteActivity extends AppCompatActivity {
     public void onClickEnviarReporte() {
 
         StorageReference reporteImageReference = FirebaseStorage.getInstance().getReference().child(FirebaseReferences.IMAGENES_REPORTES_REFERENCE);
-        final StorageReference photoReference = reporteImageReference.child(FirebaseReferences.IMAGEN_REPORTE_FINAL_REFERENCE);
+        final StorageReference photoReference = reporteImageReference.child(photoName);
         final UploadTask uploadTask=photoReference.putFile(mPhotoSelectedUri);
-
-
-        uploadTask.addOnFailureListener(new OnFailureListener() {
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
-            public void onFailure(@NonNull Exception e) {
-                Snackbar.make(linearParent,R.string.main_message_upload_failure,Snackbar.LENGTH_SHORT).show();
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                // Continue with the task to get the download URL
+                return photoReference.getDownloadUrl();
             }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Task<Uri> urlTask=uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        if (!task.isSuccessful()) {
-                            throw task.getException();
-                        }
-                        // Continue with the task to get the download URL
-                        return photoReference.getDownloadUrl();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Uri downloadUri = task.getResult();
-                            savePhotoUrl(downloadUri);
-                            Log.d(TAG,"downloadUri: "+downloadUri);
-                            Snackbar.make(linearParent,R.string.main_message_upload_success,Snackbar.LENGTH_SHORT).show();
-                        } else {
-                            // Handle failures
-                            // ...
-                        }
-                    }
-                });
-
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    savePhotoUrl(downloadUri.toString());
+                    Log.d(TAG,""+downloadUri.toString());
+                } else {
+                    // Handle failures
+                    // ...
+                }
             }
         });
-
     }
 
-    private void savePhotoUrl(final Uri downloadUri) {
+    private void savePhotoUrl(final String downloadUri) {
+        Toast.makeText(MandarReporteActivity.this, "Enviando Reporte", Toast.LENGTH_SHORT).show();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference reference = database.getReference(FirebaseReferences.REPORTES_REFERENCE);
 
@@ -351,13 +399,13 @@ public class MandarReporteActivity extends AppCompatActivity {
                         String titulo = etTituloReporte.getText().toString();
                         String ubicacion = etUbicacion.getText().toString();
                         String descripcion = etDescripcion.getText().toString();
-                        Uri imgURL = downloadUri;
+                        String imgURL = downloadUri;
                         long fecha = System.currentTimeMillis();
                         boolean estado = false;
                         Reporte reporte = new Reporte(categoria, titulo, ubicacion, descripcion, imgURL, fecha, estado);
 
                         reference.child(key).push().setValue(reporte);
-                        //Toast.makeText(MandarReporteActivity.this, "Reporte enviado con éxito!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MandarReporteActivity.this, "Reporte enviado con éxito!", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

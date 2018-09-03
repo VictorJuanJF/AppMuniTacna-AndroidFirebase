@@ -7,14 +7,14 @@ public class Reporte {
     private String titulo;
     private String ubicacion;
     private String descripcion;
-    private Uri imgURL;
+    private String imgURL;
     private long fecha;
     private boolean estado;
 
     public Reporte() {
     }
 
-    public Reporte(String categoria, String titulo, String ubicacion, String descripcion, Uri imgURL, long fecha, boolean estado) {
+    public Reporte(String categoria, String titulo, String ubicacion, String descripcion, String imgURL, long fecha, boolean estado) {
         this.categoria = categoria;
         this.titulo = titulo;
         this.ubicacion = ubicacion;
@@ -56,11 +56,11 @@ public class Reporte {
         this.descripcion = descripcion;
     }
 
-    public Uri getImgURL() {
+    public String getImgURL() {
         return imgURL;
     }
 
-    public void setImgURL(Uri imgURL) {
+    public void setImgURL(String imgURL) {
         this.imgURL = imgURL;
     }
 
