@@ -105,4 +105,5 @@
     <string name="title_activity_perfil_usuario">PerfilUsuarioActivity</string>
     <string name="main_message_upload_success">Reporte enviado exitosamente!</string>
     <string name="main_message_upload_failure">Algo falló :/ por favor envía de nuevo tu reporte</string>
+    <string name="title_activity_record">RecordActivity</string>
 </resources>

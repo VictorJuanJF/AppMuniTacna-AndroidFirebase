@@ -192,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements onItemClickListen
                     String nombres=mAuth.getCurrentUser().getDisplayName();
                     String correo=mAuth.getCurrentUser().getEmail();
                     Usuario currentUserData=new Usuario(nombres,correo,"","","");
+                    Global.setCurrentDataUser(currentUserData);
                     reference.push().setValue(currentUserData);
                 }
             }
@@ -273,6 +274,11 @@ public class MainActivity extends AppCompatActivity implements onItemClickListen
 
                 Intent intent=new Intent(MainActivity.this,PerfilUsuarioActivity.class);
                 startActivity(intent);
+                return true;
+            case R.id.action_record:
+
+                Intent intentl=new Intent(MainActivity.this,RecordActivity.class);
+                startActivity(intentl);
                 return true;
 
             default:
