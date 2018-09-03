@@ -24,15 +24,56 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/toolbar">
 
-            <FrameLayout
+            <LinearLayout
+                android:id="@+id/linearParent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/imgFoto"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/app.bar.height"
-                    android:background="@android:color/darker_gray"
-                    android:src="@drawable/captura"/>
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:id="@+id/linearGaleria"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/imgGaleria"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.75"
+                        android:background="@android:color/darker_gray"
+                        android:src="@drawable/ic_image"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.25"
+                        android:layout_gravity="center"
+                        android:textSize="20dp"
+                        android:text="Galería"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/linearFoto"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/imgCamara"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.75"
+                        android:background="@android:color/holo_blue_dark"
+                        android:src="@drawable/ic_photo_camera"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.25"
+                        android:layout_gravity="center"
+                        android:textSize="20dp"
+                        android:text="Cámara"/>
+                </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -41,7 +82,20 @@
                     android:layout_marginTop="20dp">
 
                 </LinearLayout>
-            </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearFotoTotal"
+                    android:layout_width="0dp"
+                    android:layout_weight="0"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/imgFoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+                </LinearLayout>
+            </LinearLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -51,6 +105,7 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
+
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_mandar_reporte" />

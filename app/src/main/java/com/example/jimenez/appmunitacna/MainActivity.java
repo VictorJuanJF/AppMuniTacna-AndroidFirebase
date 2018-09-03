@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements onItemClickListen
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
                     String currentUserKey = childSnapshot.getKey();
+                    Global.setUserKey(currentUserKey);
                     Global.setCurrentDataUser(dataSnapshot.child(currentUserKey).getValue(Usuario.class));
 
                 }

@@ -3,7 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="artist.hint.nombre">Nombre Categoría</string>
     <string name="artist.hint.orden">orden</string>
-    <string name="title_activity_mandar_reporte">Reporte</string>
+    <string name="title_activity_mandar_reporte">""</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -103,4 +103,6 @@
     <string name="main.menu.signOut">Cerrar Sesión</string>
     <string name="main.menu.editarPerfil">Editar Perfil</string>
     <string name="title_activity_perfil_usuario">PerfilUsuarioActivity</string>
+    <string name="main_message_upload_success">Reporte enviado exitosamente!</string>
+    <string name="main_message_upload_failure">Algo falló :/ por favor envía de nuevo tu reporte</string>
 </resources>

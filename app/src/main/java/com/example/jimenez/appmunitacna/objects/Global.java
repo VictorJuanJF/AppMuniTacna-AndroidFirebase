@@ -6,9 +6,19 @@ import com.google.firebase.auth.FirebaseUser;
 public class Global {
     public static FirebaseUser globalDataUser;
     public static Usuario currentDataUser;
+    public static String userKey;
 
     public Global() {
     }
+
+    public static String getUserKey() {
+        return userKey;
+    }
+
+    public static void setUserKey(String userKey) {
+        Global.userKey = userKey;
+    }
+
 
     public static Usuario getCurrentDataUser() {
         return currentDataUser;
