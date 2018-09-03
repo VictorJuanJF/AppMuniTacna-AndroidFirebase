@@ -353,7 +353,7 @@ public class MandarReporteActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnEnviar)
     public void onClickEnviarReporte() {
-
+        Toast.makeText(MandarReporteActivity.this, "Enviando Reporte", Toast.LENGTH_SHORT).show();
         StorageReference reporteImageReference = FirebaseStorage.getInstance().getReference().child(FirebaseReferences.IMAGENES_REPORTES_REFERENCE);
         final StorageReference photoReference = reporteImageReference.child(photoName);
         final UploadTask uploadTask=photoReference.putFile(mPhotoSelectedUri);
@@ -383,7 +383,6 @@ public class MandarReporteActivity extends AppCompatActivity {
     }
 
     private void savePhotoUrl(final String downloadUri) {
-        Toast.makeText(MandarReporteActivity.this, "Enviando Reporte", Toast.LENGTH_SHORT).show();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference reference = database.getReference(FirebaseReferences.REPORTES_REFERENCE);
 

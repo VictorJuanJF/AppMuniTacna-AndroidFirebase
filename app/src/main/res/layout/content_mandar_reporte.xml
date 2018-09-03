@@ -62,17 +62,17 @@
                 android:inputType="textMultiLine"
                 android:maxLength="@integer/notas.maxLength"/>
         </android.support.design.widget.TextInputLayout>
+        <TextView
+            android:id="@+id/tvFecha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fecha"/>
         <Button
             android:id="@+id/btnEnviar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Enviar Reporte"
             android:layout_gravity="center"/>
-        <TextView
-            android:id="@+id/tvFecha"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fecha"/>
 
     </LinearLayout>
 
