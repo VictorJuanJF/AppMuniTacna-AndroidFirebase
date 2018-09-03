@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,18 +11,22 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jimenez.appmunitacna.Clases.Usuario;
 import com.example.jimenez.appmunitacna.objects.FirebaseReferences;
 import com.example.jimenez.appmunitacna.objects.Global;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +34,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements onItemClickListener {
 
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements onItemClickListen
 
     private static final int RC_SIGN_IN = 123;
     private static final String PROVEEDOR_DESCONOCIDO = "Proveedor Desconocido";
+    private static final String TAG = "FirebaseDataSnapshot";
+    public static Usuario currentUser=new Usuario();
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -80,8 +84,33 @@ public class MainActivity extends AppCompatActivity implements onItemClickListen
         configRecyclerView();
         generateCategoria();
 
+    }
 
+    private void cargarDatosUsuario() {
+        final FirebaseAuth mAuth=FirebaseAuth.getInstance();
+        FirebaseUser user=mAuth.getCurrentUser();
 
+        Global.setGlobalDataUser(user);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference reference = database.getReference(FirebaseReferences.USERS_REFERENCE);
+
+        Query query=reference.orderByChild("correo").equalTo(Global.getGlobalDataUser().getEmail()); // de la bd selecciono nodo que contiene al usuario actual
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                    String currentUserKey = childSnapshot.getKey();
+                    Global.setCurrentDataUser(dataSnapshot.child(currentUserKey).getValue(Usuario.class));
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        //Usuario currentUserData= GlobalCurrentUser.getCompleteUserData();
     }
 
     /*************************************************************************************************************************
@@ -94,8 +123,9 @@ public class MainActivity extends AppCompatActivity implements onItemClickListen
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                Global.setGlobalNameUser(user);
                 if (user != null) {
+                    cargarDatosUsuario();
+                    Global.setGlobalDataUser(user);
                     onSetDataUser(user.getDisplayName(), user.getEmail(), user.getProviders() != null ?
                             user.getProviders().get(0) : PROVEEDOR_DESCONOCIDO);
 
@@ -132,12 +162,44 @@ public class MainActivity extends AppCompatActivity implements onItemClickListen
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "Bienvenido!", Toast.LENGTH_SHORT).show();
+                welcomeMessageAndSaveUser();
+                cargarDatosUsuario();
             } else {
                 Toast.makeText(this, "Algo fallo, intente de nuevo!", Toast.LENGTH_SHORT).show();
             }
 
         }
+    }
+
+    private void welcomeMessageAndSaveUser() {
+        final FirebaseAuth mAuth=FirebaseAuth.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference reference = database.getReference(FirebaseReferences.USERS_REFERENCE);
+
+
+        Toast.makeText(this, "Bienvenido ! "+mAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
+
+        //Saving user into firebase db
+        reference.orderByChild("correo").equalTo(mAuth.getCurrentUser().getEmail()).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.i(TAG, "dataSnapshot value = " + dataSnapshot.getValue());
+                if(!dataSnapshot.exists()){
+                    // User Exists
+                    String nombres=mAuth.getCurrentUser().getDisplayName();
+                    String correo=mAuth.getCurrentUser().getEmail();
+                    Usuario currentUserData=new Usuario(nombres,correo,"","","");
+                    reference.push().setValue(currentUserData);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w("ErrorFirebase", "getUser:onCancelled", databaseError.toException());
+            }
+        });
+
     }
 
     @Override
@@ -206,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements onItemClickListen
                 return true;
 
             case R.id.action_editar_perfil:
+
                 Intent intent=new Intent(MainActivity.this,PerfilUsuarioActivity.class);
                 startActivity(intent);
                 return true;

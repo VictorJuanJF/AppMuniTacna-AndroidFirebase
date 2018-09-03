@@ -6,12 +6,12 @@
     <color name="white_t">#88ffffff</color>
 
     <!-- Login Resources -->
-    <color name="material_green_50">#E8F5E9</color>
-    <color name="material_green_500">#4CAF50</color>
+    <color name="material_green_50">#f4f6f9</color>
+    <color name="material_green_500">#ece74d</color>
     <color name="material_green_700">#388E3C</color>
     <color name="material_green_a200">#69F0AE</color>
-    <color name="material_lime_a700">#AEEA00</color>
-    <color name="material_purple_a700">#AA00FF</color>
+    <color name="material_lime_a700">#aabbe7</color>
+    <color name="material_purple_a700">#779ae1</color>
 
     <!--User profile resources-->
     <color name="colorPrimaryProfile">#49BEFF</color>

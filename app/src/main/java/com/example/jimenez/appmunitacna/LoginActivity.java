@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "Bienvenido Keepo!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Bienvenido!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Algo fallo, intente de nuevo!", Toast.LENGTH_SHORT).show();
             }

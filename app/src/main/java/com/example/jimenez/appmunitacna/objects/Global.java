@@ -1,18 +1,30 @@
 package com.example.jimenez.appmunitacna.objects;
 
+import com.example.jimenez.appmunitacna.Clases.Usuario;
 import com.google.firebase.auth.FirebaseUser;
 
 public class Global {
+    public static FirebaseUser globalDataUser;
+    public static Usuario currentDataUser;
+
     public Global() {
     }
 
-    public static FirebaseUser getGlobalNameUser() {
-        return GlobalNameUser;
+    public static Usuario getCurrentDataUser() {
+        return currentDataUser;
     }
 
-    public static void setGlobalNameUser(FirebaseUser globalNameUser) {
-        GlobalNameUser = globalNameUser;
+    public static void setCurrentDataUser(Usuario currentDataUser) {
+        Global.currentDataUser = currentDataUser;
     }
 
-    public static FirebaseUser GlobalNameUser;
+    public static FirebaseUser getGlobalDataUser() {
+        return globalDataUser;
+    }
+
+    public static void setGlobalDataUser(FirebaseUser globalDataUser) {
+        Global.globalDataUser = globalDataUser;
+    }
+
+
 }
