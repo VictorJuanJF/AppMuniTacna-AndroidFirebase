@@ -79,8 +79,7 @@
                     android:id="@+id/btnUbicacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Obtener Ubicacion"
-                    android:visibility="gone"/>
+                    android:text="Obtener Ubicacion" />
             </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>

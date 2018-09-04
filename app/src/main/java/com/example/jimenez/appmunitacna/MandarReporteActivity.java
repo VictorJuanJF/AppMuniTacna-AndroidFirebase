@@ -298,62 +298,9 @@ public class MandarReporteActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnUbicacion)
     public void onUbicacionClicked() {
-        Log.d("ubicacion", "Hola!");
-        // Location Listener
+        Intent intent=new Intent(MandarReporteActivity.this,MapsActivity.class);
+        startActivity(intent);
 
-        // Acquire a reference to the system Location Manager
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-// Define a listener that responds to location updates
-        LocationListener locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                // Called when a new location is found by the network location provider.
-                if (location.getLatitude() != 0.0 && location.getLongitude() != 0.0) {
-                    try {
-                        Geocoder geocoder = new Geocoder(MandarReporteActivity.this, Locale.getDefault());
-                        List<Address> list = geocoder.getFromLocation(
-                                location.getLatitude(), location.getLongitude(), 1);
-                        if (!list.isEmpty()) {
-                            Address DirCalle = list.get(0);
-                            etUbicacion.setText(DirCalle.getAddressLine(0));
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-                switch (status) {
-                    case LocationProvider.AVAILABLE:
-                        Log.d("debug", "LocationProvider.AVAILABLE");
-                        break;
-                    case LocationProvider.OUT_OF_SERVICE:
-                        Log.d("debug", "LocationProvider.OUT_OF_SERVICE");
-                        break;
-                    case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                        Log.d("debug", "LocationProvider.TEMPORARILY_UNAVAILABLE");
-                        break;
-                }
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
-                // Este metodo se ejecuta cuando el GPS es desactivado
-                etUbicacion.setText("GPS Desactivado");
-            }
-
-        };
-
-// Register the listener with the Location Manager to receive location updates
-        int permissionsCheck = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
     }
 
     @OnClick(R.id.btnEnviar)
