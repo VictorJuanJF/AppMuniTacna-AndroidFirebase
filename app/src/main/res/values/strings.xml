@@ -93,10 +93,10 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
-    <string name="artist.hint.descripcion">Descripción</string>
+    <string name="artist.hint.descripcion">Describe el incidente</string>
     <string name="reporte.titulo">Categoría</string>
-    <string name="reporte.et.titulo">Título</string>
-    <string name="reporte.et.ubicacion">Ubicación</string>
+    <string name="reporte.et.titulo">¿Cómo resumirías lo sucedido?</string>
+    <string name="reporte.et.ubicacion">¿Dónde ocurrieron los hechos?</string>
     <string name="main.hint.userName">Nombre</string>
     <string name="main.hint.email">correo</string>
     <string name="main.hint.provider">Proveedor</string>

@@ -2,6 +2,7 @@ package com.example.jimenez.appmunitacna;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -24,13 +25,17 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -224,7 +229,7 @@ public class MandarReporteActivity extends AppCompatActivity {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String dateString = formatter.format(new Date(timeInMillis));
         photoName= photoName+String.valueOf(timeInMillis);
-        tvFecha.setText("Hoy es " + dateString);
+        tvFecha.setText("" + dateString);
 
     }
 
@@ -413,7 +418,44 @@ public class MandarReporteActivity extends AppCompatActivity {
                     }
                 });
 
-
-
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.d(TAG,"titulo: "+etTituloReporte.getText().toString());
+                Log.d(TAG,"hola!");
+                onBackPressed();
+                return true;
+        }
+        return false;
+    }
+
+    private boolean isEmpty(EditText etText) {
+        if (etText.getText().toString().trim().length() > 0)
+            return false;
+        return true;
+    }
+
+    public void onBackPressed() {
+        if (isEmpty(etTituloReporte) && isEmpty(etUbicacion) && isEmpty(etDescripcion)) {
+            MandarReporteActivity.this.finish();
+
+        } else {
+            new AlertDialog.Builder(this)
+                    .setMessage("¿Deseas dejar escribir tu solicitud?")
+                    .setCancelable(false)
+                    .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            MandarReporteActivity.this.finish();
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+        }
+    }
+
+
+
 }

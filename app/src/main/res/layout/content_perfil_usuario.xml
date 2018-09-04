@@ -125,9 +125,6 @@
                     android:hint="Ingrese su número de celular"
                     android:textColor="#000000"
                     android:textSize="18sp" />
-
-
-
             </LinearLayout>
 
             <LinearLayout
